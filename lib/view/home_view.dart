@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-
 import '../view-model/prompt_viewmodel.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class PromptScreen extends StatefulWidget {
-  const PromptScreen({Key? key}) : super(key: key);
+  const PromptScreen({super.key});
 
   @override
-  _PromptScreenState createState() => _PromptScreenState();
+  PromptScreenState createState() => PromptScreenState();
 }
 
-class _PromptScreenState extends State<PromptScreen> {
+class PromptScreenState extends State<PromptScreen> {
   final TextEditingController _controller = TextEditingController();
   List<types.Message> messages = [];
 
@@ -46,11 +46,12 @@ class _PromptScreenState extends State<PromptScreen> {
                     name: 'Generated Image',
                   ));
                 } else if (viewModel.errorMessage != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(viewModel.errorMessage!),
-                      backgroundColor: Colors.red,
-                    ),
+                  Fluttertoast.showToast(
+                    msg: viewModel.errorMessage!,
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
                   );
                 }
 

@@ -38,6 +38,7 @@ dependencies:
   provider:
   http:
   build_runner: ^2.4.13
+  fluttertoast: ^8.2.8
   flutter_chat_types:
   flutter_chat_ui: ^1.6.15
   json_annotation: ^4.9.0

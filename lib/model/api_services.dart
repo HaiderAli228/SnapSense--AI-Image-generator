@@ -6,7 +6,7 @@ import 'package:snapsense/model/prompt_request.dart';
 
 class ApiService {
   final String _baseUrl = 'https://hub.mymidjourney.ai/api/v1/midjourney/imagine';
-  final String _apiKey = 'your api key here'; // Add your API key here
+  final String _apiKey = 'vk-MIZBjb2awR7EDaFoPB4U4rU3SK2bgFDugm3gLEsv92LW1Old'; // Add your API key here
 
   Future<String> generateImage(String prompt) async {
     var headers = {
