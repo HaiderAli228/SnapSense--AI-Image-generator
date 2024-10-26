@@ -1,82 +1,109 @@
-// screens/prompt_screen.dart
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import '../view-model/prompt_viewmodel.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PromptScreen extends StatefulWidget {
-  const PromptScreen({super.key});
+import '../model/bloc/prompt_bloc.dart';
+
+class CreatePromptScreen extends StatefulWidget {
+  const CreatePromptScreen({super.key});
 
   @override
-  PromptScreenState createState() => PromptScreenState();
+  State<CreatePromptScreen> createState() => _CreatePromptScreenState();
 }
 
-class PromptScreenState extends State<PromptScreen> {
-  final TextEditingController _controller = TextEditingController();
-  List<types.Message> messages = [];
+class _CreatePromptScreenState extends State<CreatePromptScreen> {
+  TextEditingController controller = TextEditingController();
 
-  void _onSend(types.PartialText message) {
-    final viewModel = Provider.of<PromptViewModel>(context, listen: false);
-    messages.add(types.TextMessage(
-      id: DateTime.now().toString(),
-      author: const types.User(id: 'user'),
-      text: message.text,
-    ));
-    viewModel.submitPrompt(message.text);
+  final PromptBloc promptBloc = PromptBloc();
+
+  @override
+  void initState() {
+    promptBloc.add(PromptInitialEvent());
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Image Generator')),
-      body: Column(
-        children: [
-          Expanded(
-            child: Consumer<PromptViewModel>(
-              builder: (context, viewModel, child) {
-                if (viewModel.generatedImageUrl != null) {
-                  messages.add(types.ImageMessage(
-                    id: DateTime.now().toString(),
-                    author: const types.User(id: 'bot'),
-                    uri: viewModel.generatedImageUrl!,
-                    size: 1000,
-                    name: 'Generated Image',
-                  ));
-                } else if (viewModel.errorMessage != null) {
-                  Fluttertoast.showToast(
-                    msg: viewModel.errorMessage!,
-                    toastLength: Toast.LENGTH_LONG,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white,
-                  );
-                }
+      appBar: AppBar(
+        title: const Text("Generate Images🚀"),
+      ),
+      body: BlocConsumer<PromptBloc, PromptState>(
+        bloc: promptBloc,
+        listener: (context, state) {},
+        builder: (context, state) {
+          if (state is PromptGeneratingImageLoadState) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is PromptGeneratingImageErrorState) {
+            return const Center(child: Text("Something went wrong"));
+          } else if (state is PromptGeneratingImageSuccessState) {
+            final successState = state;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Container(
+                    width: double.maxFinite,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: MemoryImage(successState.uint8list),
+                      ),
+                    ),
+                  ),
+                ),
+                buildPromptInputSection(),
+              ],
+            );
+          } else {
+            // Default state: Show input section when no image has been generated yet
+            return buildPromptInputSection();
+          }
+        },
+      ),
+    );
+  }
 
-                return Chat(
-                  messages: messages,
-                  onSendPressed: _onSend,
-                  user: const types.User(id: 'user'),
-                );
-              },
+  // Helper widget for the input section
+  Widget buildPromptInputSection() {
+    return Container(
+      height: 240,
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Enter your prompt",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: controller,
+            cursorColor: Colors.deepPurple,
+            decoration: InputDecoration(
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Colors.deepPurple),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                hintText: 'Enter prompt...',
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () {
-                    _onSend(types.PartialText(text: _controller.text));
-                    _controller.clear();
-                  },
-                ),
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 48,
+            width: double.maxFinite,
+            child: ElevatedButton.icon(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.deepPurple),
               ),
+              onPressed: () {
+                if (controller.text.isNotEmpty) {
+                  promptBloc.add(PromptEnteredEvent(prompt: controller.text));
+                }
+              },
+              icon: const Icon(Icons.generating_tokens),
+              label: const Text("Generate"),
             ),
           ),
         ],

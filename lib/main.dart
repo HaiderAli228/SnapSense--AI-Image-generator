@@ -1,19 +1,9 @@
-// main.dart
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:snapsense/utils/app_colors.dart';
-import 'package:snapsense/view-model/prompt_viewmodel.dart';
-import 'package:snapsense/view/home_view.dart';
+
+import 'view/home_view.dart';
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => PromptViewModel()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -22,12 +12,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Image Generator',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.deepOrange,
-        primaryColor: AppColor.themeColor
-      ),
-      home: PromptScreen(),
+          appBarTheme:
+              AppBarTheme(backgroundColor: Colors.grey.shade900, elevation: 0),
+          brightness: Brightness.dark,
+          scaffoldBackgroundColor: Colors.grey.shade900),
+      home: const CreatePromptScreen(),
     );
   }
 }
+// create image of dog
