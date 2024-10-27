@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snapsense/utils/app_colors.dart';
 
 import 'view/home_view.dart';
 
@@ -14,11 +15,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          appBarTheme:
-              AppBarTheme(backgroundColor: Colors.grey.shade900, elevation: 0),
-          brightness: Brightness.dark,
-          scaffoldBackgroundColor: Colors.grey.shade900),
-      home: const CreatePromptScreen(),
+        primaryColor: AppColor.themeColor,
+        fontFamily: "Poppins",
+      ),
+      home: const HomeView(),
     );
   }
 }

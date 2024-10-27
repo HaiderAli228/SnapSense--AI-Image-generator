@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:snapsense/utils/app_colors.dart';
 
 import '../model/bloc/prompt_bloc.dart';
 
-class CreatePromptScreen extends StatefulWidget {
-  const CreatePromptScreen({super.key});
+class HomeView extends StatefulWidget {
+  const HomeView({super.key});
 
   @override
-  State<CreatePromptScreen> createState() => _CreatePromptScreenState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
-class _CreatePromptScreenState extends State<CreatePromptScreen> {
+class _HomeViewState extends State<HomeView> {
   TextEditingController controller = TextEditingController();
 
   final PromptBloc promptBloc = PromptBloc();
@@ -24,8 +25,15 @@ class _CreatePromptScreenState extends State<CreatePromptScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Generate Images🚀"),
+        backgroundColor: AppColor.bgColor,
+        centerTitle: true,
+        title: const Text(
+          "SnapSense",
+          style: TextStyle(
+              fontWeight: FontWeight.bold, color: AppColor.bgTextColor),
+        ),
       ),
       body: BlocConsumer<PromptBloc, PromptState>(
         bloc: promptBloc,
@@ -78,14 +86,15 @@ class _CreatePromptScreenState extends State<CreatePromptScreen> {
           const SizedBox(height: 20),
           TextField(
             controller: controller,
-            cursorColor: Colors.deepPurple,
+            cursorColor: AppColor.themeColor,
             decoration: InputDecoration(
+              hintText: "Enter prompt here .... ",
               focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.deepPurple),
-                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppColor.themeColor),
+                borderRadius: BorderRadius.circular(8),
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
           ),
@@ -95,15 +104,24 @@ class _CreatePromptScreenState extends State<CreatePromptScreen> {
             width: double.maxFinite,
             child: ElevatedButton.icon(
               style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(Colors.deepPurple),
+                backgroundColor: WidgetStateProperty.all(AppColor.themeColor),
               ),
               onPressed: () {
                 if (controller.text.isNotEmpty) {
                   promptBloc.add(PromptEnteredEvent(prompt: controller.text));
                 }
               },
-              icon: const Icon(Icons.generating_tokens),
-              label: const Text("Generate"),
+              icon: const Icon(
+                Icons.generating_tokens,
+                color: AppColor.themeTextColor,
+              ),
+              label: const Text(
+                "Generate",
+                style: TextStyle(
+                    color: AppColor.themeTextColor,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16),
+              ),
             ),
           ),
         ],

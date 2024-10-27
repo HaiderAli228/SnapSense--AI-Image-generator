@@ -1,16 +1,14 @@
-import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:snapsense/view-model/api_links.dart';
 
 class PromptRepo {
   static Future<Uint8List?> generateImage(String prompt) async {
     try {
-      String url = 'https://api.vyro.ai/v1/imagine/api/generations';
       Map<String, dynamic> headers = {
-        'Authorization': 'Bearer vk-NWDuDR9puZuplrtxaahCsUvKofx2r4eBkNZnMqEw3Ugree'
+        'Authorization': 'Bearer ${ApiLinks.postApiEndPoint}'
       };
 
       Map<String, dynamic> payload = {
@@ -28,7 +26,7 @@ class PromptRepo {
       dio.options =
           BaseOptions(headers: headers, responseType: ResponseType.bytes);
 
-      final response = await dio.post(url, data: formData);
+      final response = await dio.post(ApiLinks.baseUrl, data: formData);
       if (response.statusCode == 200) {
         log(response.data.runtimeType.toString());
         log(response.data.toString());
