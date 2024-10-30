@@ -1,4 +1,6 @@
-class ApiLinks{
-  static const String baseUrl = 'https://api.vyro.ai/v1/imagine/api/generations';
-  static const String postApiEndPoint = '	your api key here ';
+class ApiLinks {
+  static const String apiKey =
+      "your api key here "; // Replace with your actual API key
+  static const String endpoint =
+      "https://api.stability.ai/v2beta/stable-image/generate/core";
 }
