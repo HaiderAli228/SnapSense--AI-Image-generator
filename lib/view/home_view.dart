@@ -112,15 +112,15 @@ class _HomeViewState extends State<HomeView> {
                 }
               },
               icon: const Icon(
-                Icons.generating_tokens,
+                Icons.gesture_rounded,
                 color: AppColor.themeTextColor,
               ),
               label: const Text(
                 "Generate",
                 style: TextStyle(
                     color: AppColor.themeTextColor,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16),
+                    letterSpacing: 1,
+                    fontSize: 18),
               ),
             ),
           ),
